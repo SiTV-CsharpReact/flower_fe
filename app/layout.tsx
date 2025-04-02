@@ -4,7 +4,7 @@ import Footer from '@/components/share/Footer';
 import ScrollToTop from '@/components/share/ScrollToTop';
 import { Geist, Geist_Mono } from "next/font/google";
 import Header from '@/components/share/Header';
-
+import { Toaster } from "@/components/ui/sonner"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,6 +37,7 @@ export default function RootLayout({
         <div className='relative'>
           <Header/>
           {children}
+          <Toaster />
           <Footer />
           <ScrollToTop />
         </div>

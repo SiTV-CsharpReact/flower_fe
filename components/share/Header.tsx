@@ -3,11 +3,29 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignInForm } from "../auth/SignInForm";
 import { useState } from "react";
-
+import { useAccountStore } from "@/stores/Account.store";
+import { Label } from "../ui/label";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu"
+import { removeCookie } from "@/lib/utils";
+import { toast } from "sonner";
 const Header = () => {
   const pathname = usePathname();
   const [isSignInOpen, setIsSignInOpen] = useState(false);
-
+  const { isName } = useAccountStore();
+   const handleLogout = async () => {
+    removeCookie('access_token');
+    toast("Đăng xuất thành công")
+    window.location.reload();
+    }
   return (
     <>
       {pathname !== "/" && (
@@ -135,26 +153,59 @@ const Header = () => {
 
                 {/* Icons */}
                 <div className="flex items-center space-x-4">
-            
-                      <button className="p-2 cursor-pointer" onClick={() => setIsSignInOpen(true)}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
-                      </button>
-                  
-                    <SignInForm open={isSignInOpen} onOpenChange={setIsSignInOpen} />
+                  {isName ? (
                 
+                     <DropdownMenu>
+                     <DropdownMenuTrigger asChild className="cursor-pointer">
+                       <Label >Xin chào, {isName}</Label>
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent className="w-56">
+                       <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                       <DropdownMenuSeparator />
+                       <DropdownMenuGroup>
+                         <DropdownMenuItem>
+                           Profile
+                           <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                         </DropdownMenuItem>
+                       
+                       </DropdownMenuGroup>
+                       {/* <DropdownMenuSeparator /> */}
+                     
+                       
+                    
+                       <DropdownMenuItem onClick={()=>handleLogout()}>
+                         Log out
+                         <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                       </DropdownMenuItem>
+                     </DropdownMenuContent>
+                   </DropdownMenu>
+           
+                  ) : (
+                    <button
+                      className="p-2 cursor-pointer"
+                      onClick={() => setIsSignInOpen(true)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                    </button>
+                  )}
+
+                  <SignInForm
+                    open={isSignInOpen}
+                    onOpenChange={setIsSignInOpen}
+                  />
 
                   <button className="p-2">
                     <svg
